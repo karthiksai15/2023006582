@@ -1,24 +1,17 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 class Notification{
 
     private String id;
     private String type;
     private String message;
-    private long timestamp;
+    private String timestamp;
 
-    public Notification(String id,String type,String message,long timestamp){
+    public Notification(String id,String type,String message,String timestamp){
         this.id=id;
         this.type=type;
         this.message=message;
         this.timestamp=timestamp;
-    }
-
-    public String getId(){
-        return id;
     }
 
     public String getType(){
@@ -29,12 +22,12 @@ class Notification{
         return message;
     }
 
-    public long getTimestamp(){
+    public String getTimestamp(){
         return timestamp;
     }
 }
 
-public class PriorityNotification{
+public class PriorityNotification {
 
     public static int getWeight(String type){
 
@@ -49,48 +42,64 @@ public class PriorityNotification{
         return 1;
     }
 
-    public static int getScore(Notification notification){
-        return getWeight(notification.getType())+(int)notification.getTimestamp();
-    }
-
     public static void main(String[] args){
 
         List<Notification> notifications=new ArrayList<>();
 
-        notifications.add(new Notification("1","Placement","CSX Corporation Hiring",100));
-        notifications.add(new Notification("2","Result","Mid Sem Results",90));
-        notifications.add(new Notification("3","Event","Farewell Event",80));
-        notifications.add(new Notification("4","Placement","AMD Hiring",110));
-        notifications.add(new Notification("5","Result","Project Review",95));
+        notifications.add(new Notification(
+                "d146095a",
+                "Result",
+                "mid-sem",
+                "2026-04-22 17:51:30"
+        ));
 
-        PriorityQueue<Notification> pq=new PriorityQueue<>(new java.util.Comparator<Notification>(){
-                    @Override
-                    public int compare(Notification a,Notification b){
-                        return getScore(a)-getScore(b);
-                    }
-                }
-        );
+        notifications.add(new Notification(
+                "b283218f",
+                "Placement",
+                "CSX Corporation hiring",
+                "2026-04-22 17:51:18"
+        ));
 
-        for(Notification notification:notifications){
-            pq.offer(notification);
+        notifications.add(new Notification(
+                "81589ada",
+                "Event",
+                "farewell",
+                "2026-04-22 17:51:06"
+        ));
+
+        notifications.add(new Notification(
+                "8a7412bd",
+                "Placement",
+                "Advanced Micro Devices Inc. hiring",
+                "2026-04-22 17:49:42"
+        ));
+
+        PriorityQueue<Notification> pq=
+                new PriorityQueue<>((a,b)->getWeight(a.getType())-getWeight(b.getType())
+                );
+
+        for(Notification n:notifications){
+
+            pq.offer(n);
 
             if(pq.size()>10){
                 pq.poll();
             }
         }
 
-        List<Notification> topNotifications=new ArrayList<>();
+        List<Notification> result=new ArrayList<>();
 
         while(!pq.isEmpty()){
-            topNotifications.add(pq.poll());
+            result.add(pq.poll());
         }
 
-        Collections.reverse(topNotifications);
+        Collections.reverse(result);
 
         System.out.println("Top 10 Priority Notifications");
 
-        for(Notification notification:topNotifications){
-            System.out.println(notification.getType()+" | "+notification.getMessage());
+        for(Notification n:result){
+            System.out.println(n.getType() +" | " +n.getMessage() +" | " +n.getTimestamp()
+            );
         }
     }
 }
